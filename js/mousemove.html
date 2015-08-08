@@ -1,0 +1,20 @@
+<html>
+  <head>
+    <title></title>
+    <meta content="">
+    <style></style>
+  </head>
+  <body>
+	  <script>
+		var mouse_monitor = function(e) {
+		  var x = e.pageX;
+		  var y = e.pageY;
+		  console.log(x, y);
+		}
+
+		window.onload = function() {
+		  this.addEventListener('mousemove', mouse_monitor);
+		}	  
+	</script>
+  </body>
+</html>
