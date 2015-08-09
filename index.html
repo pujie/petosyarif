@@ -349,8 +349,11 @@
 						context.strokeStyle='#'+$(".color").val();
 						context.lineWidth = 4;
 						context.stroke();
-						th = mouseposx - startX;
-						tv = mouseposy - startY;
+						th = mousepos.x - startX;
+						tv = mousepos.y - startY;
+						radian = Math.atan2(tv , th);
+						degree = radian * (180 / Math.PI);
+						console.log('angle',degree);
 						break;
 					case "lineWithArrow":
 						context.lineTo(mousepos.x,mousepos.y);
