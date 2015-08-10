@@ -50,6 +50,13 @@
 				context.lineWidth = 4;
 				context.stroke();				
 			}
+			drawRectangle = function(mousepos,ocolor){
+				context.beginPath();
+				context.rect(startX,startY,mousepos.x - startX,mousepos.y - startY);
+				context.lineWidth = 4;
+				context.strokeStyle = ocolor;
+				context.stroke();				
+			}
 			loadImage = function(){
 				imageObj.onload = function(){
 					context.drawImage(imageObj,0,0);
@@ -127,13 +134,16 @@
 					switch(mycursor){
 						case "circle":
 							context.setLineDash([]);
+							context.lineWidth = 4;
 							drawCircle(mousepos,'brown');
 						break;
 						case "rectangle":
-							context.beginPath();
+							drawRectangle(mousepos,'black');
+							/*context.beginPath();
 							context.rect(startX,startY,mousepos.x - startX,mousepos.y - startY);
+							context.lineWidth = 4;
 							context.strokeStyle = 'black';
-							context.stroke();
+							context.stroke();*/
 						break;
 						case 'freedrag':
 							drawFreeLine(mousepos,'brown');
@@ -168,6 +178,9 @@
 						break;
 					case "circle":
 						drawCircle(mousepos,ocolor);
+						break;
+					case "rectangle":
+						drawRectangle(mousepos,ocolor);
 						break;
 					case "line":
 						radius = Math.sqrt(Math.pow(mousepos.x-startX,2)+Math.pow(mousepos.y-startY,2));
