@@ -198,6 +198,11 @@
 				context.clearRect(0,0,canvas.width,canvas.height);
 				loadImage();
 			});
+			$("#btnUndo").click(function(){
+				clearRect();
+				context.putImageData(imageData, 0, 0);
+				$(this).attr('disabled',true)
+			});
 			$("#btnSave").click(function(){
 				var dataUrl = canvas.toDataURL(),
 				arrfilename=$("#imagename").val().split(".");
