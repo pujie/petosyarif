@@ -93,6 +93,12 @@
 						curPosX = mousepos.x;
 						curPosY = mousepos.y;
 					break;
+					case "rectangle":
+						context.beginPath();
+						startX = mousepos.x;
+						startY = mousepos.y;
+						context.moveTo(mousepos.x,mousepos.y);
+					break;
 				}
 			});
 			canvas.addEventListener('mousemove',function(evt){
@@ -103,6 +109,12 @@
 					switch(mycursor){
 						case "circle":
 							drawCircle(mousepos,'brown');
+						break;
+						case "rectangle":
+							context.beginPath();
+							context.rect(startX,startY,mousepos.x - startX,mousepos.y - startY);
+							context.strokeStyle = 'black';
+							context.stroke();
 						break;
 						case 'freedrag':
 							drawFreeLine(mousepos,'brown');
@@ -184,6 +196,9 @@
 			});
 			$("#btnCircle").click(function(){
 				mycursor = "circle";
+			});
+			$("#btnRectangle").click(function(){
+				mycursor = "rectangle";
 			});
 			$("#btnFreeDrag").click(function(){
 				mycursor = "freedrag";
