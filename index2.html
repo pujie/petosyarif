@@ -205,6 +205,12 @@
 						startY = mousepos.y;
 						context.moveTo(mousepos.x,mousepos.y);
 					break;
+					case "text":
+						context.beginPath();
+						startX = mousepos.x;
+						startY = mousepos.y;
+						context.moveTo(mousepos.x,mousepos.y);
+					break;
 					case "freedrag":
 						context.beginPath();
 						context.moveTo(mousepos.x,mousepos.y);
@@ -236,6 +242,14 @@
 							context.lineWidth = 4;
 							context.stroke();
 						break;
+						case 'text':
+							context.beginPath();
+							context.moveTo(startX,startY);
+							context.lineTo(mousepos.x,mousepos.y);
+							context.strokeStyle='#'+$(".color").val();
+							context.lineWidth = 4;
+							context.stroke();
+						break;
 					}
 				}
 			});
@@ -256,6 +270,16 @@
 						radian = Math.atan2(tv , th);
 						degree = radian * (180 / Math.PI);
 						makelinewitharrow(startX,startY,radius,degree,20);
+						break;
+					case "text":
+						context.save();
+						context.translate(0,0);
+						context.rotate(Math.PI/2);
+						context.font = "16px serif";
+						context.fillStyle = "red";
+						context.textAlign = "left";
+						context.fillText("dukuh kupang timur XV 8",0,0);
+						context.restore();
 						break;
 				}
 			});
@@ -285,6 +309,9 @@
 			});
 			$("#btnFreeDrag").click(function(){
 				mycursor = "freedrag";
+			});
+			$("#btnText").click(function(){
+				mycursor = "text";
 			});
 			$("#btnDownload").click(function(){
 				var dataUrl = canvas.toDataURL();
