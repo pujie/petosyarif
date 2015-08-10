@@ -99,6 +99,24 @@
 						startY = mousepos.y;
 						context.moveTo(mousepos.x,mousepos.y);
 					break;
+					case "tower1":
+						context.beginPath();
+						startX = mousepos.x;
+						startY = mousepos.y;
+						context.moveTo(mousepos.x,mousepos.y);
+						var stamp = new Image();
+						stamp.src = 'img/stamps/RadioTower.png';
+						context.drawImage(stamp,startX,startY,40,90);
+					break;
+					case "tower2":
+						context.beginPath();
+						startX = mousepos.x;
+						startY = mousepos.y;
+						context.moveTo(mousepos.x,mousepos.y);
+						var stamp = new Image();
+						stamp.src = 'img/stamps/antenna.png';
+						context.drawImage(stamp,startX,startY,40,90);
+					break;
 				}
 			});
 			canvas.addEventListener('mousemove',function(evt){
@@ -108,6 +126,7 @@
 					context.putImageData(imageData, 0, 0);
 					switch(mycursor){
 						case "circle":
+							context.setLineDash([]);
 							drawCircle(mousepos,'brown');
 						break;
 						case "rectangle":
@@ -120,6 +139,7 @@
 							drawFreeLine(mousepos,'brown');
 						break;
 						case 'line':
+							context.setLineDash([]);
 							context.beginPath();
 							context.moveTo(startX,startY);
 							context.lineTo(mousepos.x,mousepos.y);
@@ -133,6 +153,7 @@
 							context.lineTo(mousepos.x,mousepos.y);
 							context.strokeStyle='#'+$(".color").val();
 							context.lineWidth = 4;
+							context.setLineDash([5,15]);
 							context.stroke();
 						break;
 					}
@@ -202,6 +223,12 @@
 			});
 			$("#btnFreeDrag").click(function(){
 				mycursor = "freedrag";
+			});
+			$("#btnTower1").click(function(){
+				mycursor = "tower1";
+			});
+			$("#btnTower2").click(function(){
+				mycursor = "tower2";
 			});
 			$("#btnText").click(function(){
 				$('#dText').modal();
