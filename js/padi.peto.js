@@ -158,6 +158,12 @@
 					context.setLineDash([5,15]);
 					context.stroke();
 				break;
+				case 'tower1':
+				drawObject(mousepos,'img/stamps/RadioTower.png');
+				break;
+				case 'tower2':
+				drawObject(mousepos,'img/stamps/antenna.png');
+				break;
 			}
 		}
 	});
