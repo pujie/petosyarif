@@ -78,6 +78,10 @@
 		context.strokeStyle = ocolor;
 		context.drawImage(img,startX,startY,600,340);
 	}
+	/*download = function(link,canvas,filename){
+		link.href = canvas.toDataURL();
+		link.download = filename;
+	}*/
 	download = function(link,canvas,filename){
 		link.href = canvas.toDataURL();
 		link.download = filename;
@@ -137,7 +141,18 @@
 			case "tower2":
 				drawObject(mousepos,'img/stamps/antenna.png');
 			break;
-		}
+			case "palm1":
+				drawObject(mousepos,ocolor,'img/stamps/palm1.png');
+				break;
+			case "palm2":
+				drawObject(mousepos,ocolor,'img/stamps/palm.png');
+				break;
+			case "forest":
+				drawObject(mousepos,ocolor,'img/stamps/forest.png');
+				break;
+			case "stampApproved":
+				drawStamp(mousepos,ocolor,completed);
+				break;		}
 	});
 	canvas.addEventListener('mousemove',function(evt){
 		var mousepos = getMousePos(canvas,evt),ocolor = '#'+$(".color").val();
@@ -258,7 +273,8 @@
 		$(this).attr('disabled',true)
 	});
 	$("#btnSave").click(function(){
-		download(this,canvas,'test.png');
+		//download(this,canvas,'test.png');
+		$('#dSave').modal();
 	});
 	$("#btnArrow").click(function(){
 		mycursor = "arrow";

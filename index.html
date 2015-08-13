@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+	<link rel="stylesheet" href="css/padi.peto.css" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
     <!--[if gt IE 8]>
@@ -19,15 +20,11 @@
     -->
     <script type='text/javascript' src='js/jquery-1.8.2.min.js'></script>
     <script type='text/javascript' src='js/jquery-ui-1.8.14.custom.min.js'></script>
-    <script type='text/javascript' src='js/plugins/jquery/jquery.mousewheel.min.js'></script>
     <script type='text/javascript' src='js/plugins/cookie/jquery.cookies.2.2.0.min.js'></script>
     <script type='text/javascript' src='js/plugins/bootstrap.min.js'></script>
-    <script type='text/javascript' src='js/plugins/sparklines/jquery.sparkline.min.js'></script>
     <script type='text/javascript' src='js/plugins/select2/select2.min.js'></script>
     <script type='text/javascript' src='js/plugins/uniform/uniform.js'></script>
     <script type='text/javascript' src='js/plugins/maskedinput/jquery.maskedinput-1.3.min.js'></script>
-    <script type='text/javascript' src='js/plugins/mcustomscrollbar/jquery.mCustomScrollbar.min.js'></script>
-    <script type='text/javascript' src='js/plugins/animatedprogressbar/animated_progressbar.js'></script>
     <script type='text/javascript' src='js/plugins/qtip/jquery.qtip-1.0.0-rc3.min.js'></script>
     <script type='text/javascript' src='js/plugins/cleditor/jquery.cleditor.js'></script>
     <script type='text/javascript' src='js/plugins/fancybox/jquery.fancybox.pack.js'></script>
@@ -36,8 +33,56 @@
 </head>
 <script type="text/javascript" src="js/jscolor.js"></script>
 <body>
+	<div id="dText" class="modal hide fade" role="dialog" aria-labelledby="myModalLabel">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			<h3 id="myWithdrawLabel">Text to write</h3>
+		</div>
+		<div class="modal-body">
+			<div class="row-fluid">
+				<div class="span12">
+					<div class="block-fluid without-head">
+						<div class="row-form clearfix">
+							<div class="span3">Text</div>
+							<div class="span9">
+								<input id="textToWrite" />
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn-warning closemodal" type="button" id='saveText'>OK</button>
+				<button class="btn closemodal" type="button">Batalkan</button>
+			</div>
+		</div>
+	</div>
+	<div id="dSave" class="modal hide fade" role="dialog" aria-labelledby="myModalLabel">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			<h3 id="mySaveLabel">File Name</h3>
+		</div>
+		<div class="modal-body">
+			<div class="row-fluid">
+				<div class="span12">
+					<div class="block-fluid without-head">
+						<div class="row-form clearfix">
+							<div class="span3">Name</div>
+							<div class="span9">
+								<input id="picName" />
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn-warning closemodal" type="button" id='btnDownload'>OK</button>
+				<button class="btn closemodal" type="button">Batalkan</button>
+			</div>
+		</div>
+	</div>
     <div class="header">
-        <a class="logo" href="index.html"><img src="img/logo.png" alt="Aquarius -  responsive admin panel" title="Aquarius -  responsive admin panel"/></a>
+        <a class="logo" href="index.html"><img src="img/logo.png" alt="Peto Syarif" title="Peto Syarif"/></a>
         <ul class="header_menu">
             <li class="list_icon"><a href="#">&nbsp;</a></li>
         </ul>
@@ -46,109 +91,117 @@
         <div class="breadLine">
             <div class="arrow"></div>
             <div class="adminControl active">
-                Salam
+                Tuanku Imam Bonjol (1772 - 1864)
             </div>
         </div>
         <div class="admin">
             <div class="image">
-                <img src="img/users/aqvatariusx.jpg" class="img-polaroid"/>
+                <img src="img/face.png" class="img-polaroid"/>
             </div>
-            <ul class="control">
-                <li><span class="icon-comment"></span> <a href="messages.html">Messages</a> <a href="messages.html" class="caption red">12</a></li>
-                <li><span class="icon-cog"></span> <a href="forms.html">Settings</a></li>
-                <li><span class="icon-share-alt"></span> <a href="login.html">Logout</a></li>
-            </ul>
             <div class="info">
                 <span>Image Editor 1.0</span>
             </div>
         </div>
         <ul class="navigation">
             <li>
-                <a href="index.html">
-                    <span class="isw-grid"></span><span class="text">Tools</span>
+                <a id="btnSave" class="pointer">
+                    <span class="isw-download"></span><span class="text">Download</span>
+                </a>
+            </li>
+            <li>
+                <a id="btnClear" class="pointer">
+                    <span class="isw-delete"></span><span class="text">Clear</span>
+                </a>
+            </li>
+            <li>
+                <a id="btnUndo" class="pointer">
+                    <span class="isw-refresh"></span><span class="text">Undo Last Change</span>
                 </a>
             </li>
             <li class="openable active">
                 <a href="#">
-                    <span class="isw-list"></span><span class="text">UI elements</span>
+                    <span class="isw-settings"></span><span class="text">Tools</span>
                 </a>
                 <ul>
                     <li class="active">
-                        <a href="ui.html">
-                            <span class="icon-th"></span><span class="text">UI Elements</span>
+                        <a id="btnLine" class="pointer">
+                            <span class="icon-chevron-right"></span><span class="text">Line</span>
                         </a>
                     </li>
                     <li>
-                        <a href="widgets.html">
-                            <span class="icon-th-large"></span><span class="text">Widgets</span>
+                        <a id="btnCircle" class="pointer">
+                            <span class="icon-chevron-right"></span><span class="text">Circle</span>
                         </a>
                     </li>
                     <li>
-                        <a href="buttons.html">
-                            <span class="icon-chevron-right"></span><span class="text">Buttons</span>
+                        <a id="btnRectangle" class="pointer">
+                            <span class="icon-chevron-right"></span><span class="text">Rectangle</span>
                         </a>
                     </li>
                     <li>
-                        <a href="icons.html">
-                            <span class="icon-fire"></span><span class="text">Icons</span>
+                        <a id="btnFreeDrag" class="pointer">
+                            <span class="icon-chevron-right"></span><span class="text">Free Draw</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a id="btnText" class="pointer">
+                            <span class="icon-chevron-right"></span><span class="text">Text</span>
                         </a>
                     </li>
                 </ul>
-            </li>
-            <li>
-                <a href="forms.html">
-                    <span class="isw-archive"></span><span class="text">Forms stuff</span>
-                </a>
             </li>
             <li class="openable">
                 <a href="#">
-                    <span class="isw-chat"></span><span class="text">Messages</span>
+                    <span class="isw-settings"></span><span class="text">Towers</span>
                 </a>
                 <ul>
+                    <li class="active">
+                        <a id="btnTower1" class="pointer">
+                            <span class="icon-chevron-right"></span><span class="text">Tower 1</span>
+                        </a>
+                    </li>
                     <li>
-                        <a href="messages.html"><span class="icon-comment"></span><span class="text">Messages widgets</span></a>
-						<a href="#" class="caption yellow link_navPopMessages">5</a>
-						<div id="navPopMessages" class="popup" style="display: none;">
-							<div class="head clearfix">
-								<div class="arrow"></div>
-								<span class="isw-chats"></span>
-								<span class="name">Personal messages</span>
-							</div>
-							<div class="body messages">
-								<div class="item">
-									<div class="image"><a href="#"><img src="img/users/aqvatarius.jpg" class="img-polaroid"/></a></div>
-									<div class="info clearfix">
-										<a href="#" class="name">Aqvatarius</a>
-										<p>Lorem ipsum dolor. In id adipiscing diam. Sed lobortis dui ut odio tempor blandit. Suspendisse scelerisque mi nec nunc gravida quis mollis lacus dignissim.</p>
-										<span>19 feb 2012 12:45</span>
-									</div>
-								</div>
-							</div>
-							<div class="footer">
-								<button class="btn link_navPopMessages" type="button">Close</button>
-							</div>
-						</div>
+                        <a id="btnTower2" class="pointer">
+                            <span class="icon-chevron-right"></span><span class="text">Tower 2</span>
+                        </a>
                     </li>
                 </ul>
             </li>
-            <li>
-                <a href="statistic.html">
-                    <span class="isw-graph"></span><span class="text">Statistics</span>
+            <li class="openable">
+                <a href="#">
+                    <span class="isw-settings"></span><span class="text">Trees</span>
                 </a>
+                <ul>
+                    <li class="active">
+                        <a id="btnForest" class="pointer">
+                            <span class="icon-chevron-right"></span><span class="text">Forest</span>
+                        </a>
+                    </li>
+                    <li class="active">
+                        <a id="btnPalm1" class="pointer">
+                            <span class="icon-chevron-right"></span><span class="text">Palm 1</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a id="btnPalm2" class="pointer">
+                            <span class="icon-chevron-right"></span><span class="text">Palm 2</span>
+                        </a>
+                    </li>
+                </ul>
             </li>
-            <li>
-                <a href="tables.html">
-                    <span class="isw-text_document"></span><span class="text">Tables</span>
+            <li class="openable">
+                <a href="#">
+                    <span class="isw-settings"></span><span class="text">Stamps</span>
                 </a>
+                <ul>
+                    <li class="active">
+                        <a id="btnStampApproved" class="pointer">
+                            <span class="icon-chevron-right"></span><span class="text">Approved</span>
+                        </a>
+                    </li>
+                </ul>
             </li>
         </ul>
-        <div class="dr"><span></span></div>
-        <div class="dr"><span></span></div>
-        <div class="widget">
-            <div class="input-append">
-                <input id="appendedInputButton" style="width: 118px;" type="text"><button class="btn" type="button">Search</button>
-            </div>
-        </div>
         <div class="dr"><span></span></div>
     </div>
     <div class="content">
@@ -157,256 +210,26 @@
                 <li><a href="#">Image Editor</a> <span class="divider">></span></li>
                 <li class="active">1.0</li>
             </ul>
-            <ul class="buttons">
-                <li>
-                    <a href="#" class="link_bcPopupList"><span class="icon-user"></span><span class="text">Users list</span></a>
-                    <div id="bcPopupList" class="popup">
-                        <div class="head clearfix">
-                            <div class="arrow"></div>
-                            <span class="isw-users"></span>
-                            <span class="name">List users</span>
-                        </div>
-                        <div class="body-fluid users">
-
-                            <div class="item">
-                                <div class="image"><a href="#"><img src="img/users/aqvatarius_s.jpg" width="32"/></a></div>
-                                <div class="info clearfix">
-                                    <a href="#" class="name">Aqvatarius</a>
-                                    <span>online</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="footer">
-                            <button class="btn" type="button">Add new</button>
-                            <button class="btn btn-danger link_bcPopupList" type="button">Close</button>
-                        </div>
-                    </div>
-                </li>
-                <li>
-                    <a href="#" class="link_bcPopupSearch"><span class="icon-search"></span><span class="text">Search</span></a>
-                    <div id="bcPopupSearch" class="popup">
-                        <div class="head clearfix">
-                            <div class="arrow"></div>
-                            <span class="isw-zoom"></span>
-                            <span class="name">Search</span>
-                        </div>
-                        <div class="body search">
-                            <input type="text" placeholder="Some text for search..." name="search"/>
-                        </div>
-                        <div class="footer">
-                            <button class="btn" type="button">Search</button>
-                            <button class="btn btn-danger link_bcPopupSearch" type="button">Close</button>
-                        </div>
-                    </div>
-                </li>
-            </ul>
         </div>
-			<div class="workplace">
-				<div class="row-fluid">
-					<div class="span12">
-						<div class="head clearfix">
-							<div class="isw-picture"></div>
-							<h1>Picture</h1>
-							<ul class="buttons">
-								<li class="s_loader isw-circle" id="btnFreeDrag" title="Free drag"></li>
-								<li class="s_loader isw-circle" id="btnCircle" title="Circle"></li>
-								<li class="s_loader isw-right" id="btnArrow" title="Panah"></li>
-								<li class="s_loader isw-minus" id="btnLine" title="Garis"></li>
-								<li class="s_loader isw-edit" id="btnText" title="Text"></li>
-								<li><input id="picker_" class="color"></li>
-								<li class="s_loader isw-save" id="btnSave" title="Simpan"></li>
-								<li class="s_loader isw-cancel" id="btnClear" title="Bersihkan"></li>
-							</ul>
-						</div>
-						<div class="block-fluid tabs">
-							<canvas id="mycanvas" width=600 height=600></canvas>
-						</div>
+		<div class="workplace">
+			<div class="row-fluid">
+				<div class="span12">
+					<div class="head clearfix">
+						<div class="isw-picture"></div>
+						<h1>Picture</h1>
+						<ul class="buttons">
+							<li><input id="picker_" class="color"></li>
+						</ul>
+					</div>
+					<div class="block-fluid tabs">
+						<canvas id="mycanvas" class="pointer" width=1000 height=1000></canvas>
 					</div>
 				</div>
-				<div class="dr"><span></span></div>
 			</div>
+			<div class="dr"><span></span></div>
+		</div>
     </div>
-		<script type="text/javascript">
-		(function($){
-			getMousePos = function(canvas,evt){
-				var rect = canvas.getBoundingClientRect();
-				return {
-					x:evt.clientX-rect.left,
-					y:evt.clientY-rect.top
-				};
-			};
-			clearRect = function(){
-				context.clearRect(0,0,canvas.width,canvas.height);
-				loadImage();				
-			}
-			loadImage = function(){
-				imageObj.onload = function(){
-					context.drawImage(imageObj,0,0);
-				}
-				//imageObj.src = "https://database.padinet.com/media/installs/"+$("#imagename").val();
-				imageObj.src = "https://teknis/media/installs/"+$("#imagename").val();
-			}
-			var imageObj = new Image(),
-			canvas = document.getElementById("mycanvas"),
-			context = canvas.getContext('2d'),
-			mycursor="arrow",
-			mycolor="#000000",
-			buttonPushed = false,
-			curPosX=0,
-			curPosY=0,
-			startX = 0,
-			startY = 0,
-			imageData = context.getImageData(0, 0, context.canvas.width, context.canvas.height);
-			canvas.addEventListener('mousedown',function(evt){
-				var mousepos = getMousePos(canvas,evt);
-				console.log($(".color").val());
-				buttonPushed = true;
-				imageData = context.getImageData(0, 0, context.canvas.width, context.canvas.height);
-				switch(mycursor){
-					case "line":
-						context.beginPath();
-						startX = mousepos.x;
-						startY = mousepos.y;
-						context.moveTo(mousepos.x,mousepos.y);
-					break;
-					case "freedrag":
-						context.beginPath();
-						context.moveTo(mousepos.x,mousepos.y);
-					break;
-					case "circle":
-						context.beginPath();
-						curPosX = mousepos.x;
-						curPosY = mousepos.y;
-					break;
-					case "lineWithArrow":
-						context.beginPath();
-						curPosX=mousepos.x;
-						curPosY=mousepos.y;
-						context.moveTo(mousepos.x,mousepos.y);
-					break;
-				}
-			});
-			canvas.addEventListener('mousemove',function(evt){
-				var mousepos = getMousePos(canvas,evt);
-				if(buttonPushed){
-					clearRect();
-					context.putImageData(imageData, 0, 0);
-					switch(mycursor){
-						case 'line':
-							context.beginPath();
-							context.moveTo(startX,startY);
-							context.lineTo(mousepos.x,mousepos.y);
-							context.strokeStyle='#'+$(".color").val();
-							context.lineWidth = 4;
-							context.stroke();
-						break;
-						case 'freedrag':
-							context.lineTo(mousepos.x,mousepos.y);
-							context.strokeStyle='#'+$(".color").val();
-							context.lineWidth = 4;
-							context.stroke();
-						break;
-					}
-				}
-			});
-			canvas.addEventListener('mouseup',function(evt){
-				var mousepos = getMousePos(canvas,evt);
-				buttonPushed = false;
-				switch(mycursor){
-					case "freedrag":
-						context.lineTo(mousepos.x,mousepos.y);
-						context.strokeStyle='#'+$(".color").val();
-						context.lineWidth = 4;
-						context.stroke();
-
-						context.beginPath();
-						context.moveTo(mousepos.x,mousepos.y);
-						context.lineTo(mousepos.x-50,mousepos.y-20);
-						context.lineTo(mousepos.x-50,mousepos.y+20);
-						context.fillStyle='#'+$(".color").val();
-						context.fill();
-						break;
-					case "circle":
-						context.beginPath();
-						xx = Math.pow((mousepos.x - curPosX),2);
-						yy = Math.pow((mousepos.y - curPosY),2);
-						radius = Math.sqrt(xx+yy);
-						context.arc(curPosX,curPosY,radius,0,2*Math.PI,false);
-						context.lineWidth=4;
-						context.strokeStyle='#'+$(".color").val();
-						context.stroke();
-						break;
-					case"arrow":
-						context.beginPath();
-						context.moveTo(mousepos.x,mousepos.y);
-						context.lineTo(mousepos.x-50,mousepos.y-20);
-						context.lineTo(mousepos.x-50,mousepos.y+20);
-						context.fillStyle='#'+$(".color").val();
-						context.fill();
-						break;
-					case "line":
-						context.lineTo(mousepos.x,mousepos.y);
-						context.strokeStyle='#'+$(".color").val();
-						context.lineWidth = 4;
-						context.stroke();
-						th = mousepos.x - startX;
-						tv = mousepos.y - startY;
-						radian = Math.atan2(tv , th);
-						degree = radian * (180 / Math.PI);
-						console.log('angle',degree);
-						break;
-					case "lineWithArrow":
-						context.lineTo(mousepos.x,mousepos.y);
-						context.strokeStyle='#'+$(".color").val();
-						context.lineWidth = 4;
-						context.stroke();
-						context.beginPath();
-						context.moveTo(curPosX,curPosY);
-					break;
-				}
-			});
-			$("#btnClear").click(function(){
-				context.clearRect(0,0,canvas.width,canvas.height);
-				loadImage();
-			});
-			$("#btnSave").click(function(){
-				var dataUrl = canvas.toDataURL(),
-				arrfilename=$("#imagename").val().split(".");
-				$.ajax({
-					url:thisdomain+"adm/canvasinstallupload2",
-					data:{imgBase64:dataUrl,filename:arrfilename[0],fileextension:arrfilename[1]},
-					type:"post"
-				}).done(function(data){
-					console.log("Returned value "+data);
-				});
-			});
-			$("#btnArrow").click(function(){
-				mycursor = "arrow";
-			});
-			$("#btnLine").click(function(){
-				mycursor = "line";
-			});
-			$("#btnCircle").click(function(){
-				mycursor = "circle";
-			});
-			$("#btnFreeDrag").click(function(){
-				mycursor = "freedrag";
-			});
-			$("#btnDownload").click(function(){
-				var dataUrl = canvas.toDataURL();
-				var image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
-				window.location.href=image;
-			});
-			$("#btnLoadImage").click(function(){
-				var imageObj = new Image();
-				imageObj.onload = function(){
-					context.drawImage(imageObj,0,0);
-				}
-				imageObj.src = "https://teknis/media/installs/"+$("#imagename").val();
-				//imageObj.src = "https://database.padinet.com/media/installs/"+$("#imagename").val();
-			});
-			loadImage();
-		}(jQuery));
-		</script>
+	<script type="text/javascript" src="js/padi.peto.js"></script>
+	<script type="text/javascript" src="js/stamps.js"></script>
 </body>
 </html>
