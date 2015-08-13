@@ -57,20 +57,36 @@
 		context.strokeStyle = ocolor;
 		context.stroke();				
 	}
-	drawObject = function(mousepos,src){
+	drawObject = function(mousepos,ocolor,src){
 		context.beginPath();
 		startX = mousepos.x;
 		startY = mousepos.y;
 		context.moveTo(mousepos.x,mousepos.y);
 		var stamp = new Image();
 		stamp.src = src;
-		context.drawImage(stamp,startX,startY,40,90);
+		context.strokeStyle = ocolor;
+		//context.drawImage(stamp,startX,startY,40,90);
+		context.drawImage(stamp,startX,startY,40,70);
+	}
+	drawStamp = function(mousepos,ocolor,stamp){
+		context.beginPath();
+		startX = mousepos.x-200;
+		startY = mousepos.y-200;
+		context.moveTo(startX,startY);
+		img = new Image();
+		img.src = stamp;
+		context.strokeStyle = ocolor;
+		context.drawImage(img,startX,startY,600,340);
+	}
+	download = function(link,canvas,filename){
+		link.href = canvas.toDataURL();
+		link.download = filename;
 	}
 	loadImage = function(){
 		imageObj.onload = function(){
 			context.drawImage(imageObj,0,0);
 		}
-		imageObj.src = "https://teknis/media/installs/"+$("#imagename").val();
+	//	imageObj.src = ";
 	}
 	var imageObj = new Image(),
 		canvas = document.getElementById("mycanvas"),
@@ -84,7 +100,7 @@
 		startY = 0,
 		imageData = context.getImageData(0, 0, context.canvas.width, context.canvas.height);
 	canvas.addEventListener('mousedown',function(evt){
-		var mousepos = getMousePos(canvas,evt);
+		var mousepos = getMousePos(canvas,evt),ocolor = '#'+$('.color').val();
 		buttonPushed = true;
 		imageData = context.getImageData(0, 0, context.canvas.width, context.canvas.height);
 		switch(mycursor){
@@ -116,7 +132,7 @@
 				context.moveTo(mousepos.x,mousepos.y);
 			break;
 			case "tower1":
-				drawObject(mousepos,'img/stamps/RadioTower.png');
+				drawObject(mousepos,ocolor,'img/stamps/RadioTower.png');
 			break;
 			case "tower2":
 				drawObject(mousepos,'img/stamps/antenna.png');
@@ -159,11 +175,20 @@
 					context.stroke();
 				break;
 				case 'tower1':
-				drawObject(mousepos,'img/stamps/RadioTower.png');
+					drawObject(mousepos,ocolor,'img/stamps/RadioTower.png');
 				break;
 				case 'tower2':
-				drawObject(mousepos,'img/stamps/antenna.png');
+					drawObject(mousepos,ocolor,'img/stamps/antenna.png');
 				break;
+				case "palm1":
+					drawObject(mousepos,ocolor,'img/stamps/palm1.png');
+					break;
+				case "palm2":
+					drawObject(mousepos,ocolor,'img/stamps/palm.png');
+					break;
+				case "forest":
+					drawObject(mousepos,ocolor,'img/stamps/forest.png');
+					break;
 			}
 		}
 	});
@@ -204,10 +229,22 @@
 				context.restore();
 				break;
 			case "tower1":
-				drawObject(mousepos,'img/stamps/RadioTower.png');
+				drawObject(mousepos,ocolor,'img/stamps/RadioTower.png');
 				break;
 			case "tower2":
-				drawObject(mousepos,'img/stamps/antenna.png');
+				drawObject(mousepos,ocolor,'img/stamps/antenna.png');
+				break;
+			case "palm1":
+				drawObject(mousepos,ocolor,'img/stamps/palm1.png');
+				break;
+			case "palm2":
+				drawObject(mousepos,ocolor,'img/stamps/palm.png');
+				break;
+			case "forest":
+				drawObject(mousepos,ocolor,'img/stamps/forest.png');
+				break;
+			case "stampApproved":
+				drawStamp(mousepos,ocolor,completed);
 				break;
 		}
 	});
@@ -221,15 +258,7 @@
 		$(this).attr('disabled',true)
 	});
 	$("#btnSave").click(function(){
-		var dataUrl = canvas.toDataURL(),
-		arrfilename=$("#imagename").val().split(".");
-		$.ajax({
-			url:thisdomain+"adm/canvasinstallupload2",
-			data:{imgBase64:dataUrl,filename:arrfilename[0],fileextension:arrfilename[1]},
-			type:"post"
-		}).done(function(data){
-			console.log("Returned value "+data);
-		});
+		download(this,canvas,'test.png');
 	});
 	$("#btnArrow").click(function(){
 		mycursor = "arrow";
@@ -252,6 +281,18 @@
 	$("#btnTower2").click(function(){
 		mycursor = "tower2";
 	});
+	$("#btnPalm1").click(function(){
+		mycursor = "palm1";
+	});
+	$("#btnPalm2").click(function(){
+		mycursor = "palm2";
+	});
+	$("#btnForest").click(function(){
+		mycursor = "forest";
+	});
+	$("#btnStampApproved").click(function(){
+		mycursor = "stampApproved";
+	});
 	$("#btnText").click(function(){
 		$('#dText').modal();
 		mycursor = "text";
@@ -269,7 +310,6 @@
 		imageObj.onload = function(){
 			context.drawImage(imageObj,0,0);
 		}
-		imageObj.src = "https://teknis/media/installs/"+$("#imagename").val();
+		imageObj.src = "";
 	});
-	loadImage();
 }(jQuery));

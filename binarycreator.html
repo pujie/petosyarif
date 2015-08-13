@@ -1,0 +1,29 @@
+<html>
+	<head>
+	</head>
+	<body>
+		<canvas width=600 height=340 id='mycanvas'></canvas>
+		<span id=result></span>
+		<button id=btnGetResult></button>
+		<script>
+			drawObject = function(ocolor,src){
+				context.beginPath();
+				context.moveTo(0,0);
+				var stamp = new Image();
+				stamp.src = src;
+				context.strokeStyle = ocolor;
+				context.drawImage(stamp,0,0,600,340);
+			}
+			var canvas = document.getElementById('mycanvas'),
+				context = canvas.getContext('2d'),
+				btnResult = document.getElementById('btnGetResult'),
+				result = document.getElementById('result');
+			drawObject('black','img/stamps/approved.png');
+			btnResult.addEventListener('mouseup',function(evt){
+				console.log(canvas.toDataURL());
+				//result.setAttribute('html',canvas.toDataURL());	
+				result.value(canvas.toDataURL());	
+			});
+		</script>
+	</body>
+</html>
