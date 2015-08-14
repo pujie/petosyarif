@@ -29,6 +29,17 @@
 			outx:mousepos.x,outy:mousepos.y
 		}
 	}
+	makeroundedcorner = function(startX,startY,endX,endY,ocolor){
+		context.beginPath();
+		var width = endX - startX, height = endY - startY;
+		context.moveTo(startX,startY);
+		context.quadraticCurveTo(startX,startY+height,startX+width,startY+height);
+		context.strokeStyle = ocolor;
+		context.stroke();
+		return {
+			outx:endX,outy:endY
+		}
+	}
 	makelinewitharrow = function(x1,y1,radius,angle,arrowangle){
 		line1 = makeline(x1,y1,radius,angle);
 		line2 = makeline(line1.outx,line1.outy,20,180+angle-arrowangle);
@@ -132,6 +143,91 @@
 		line2 = makeline(line1.outx,line1.outy,20,180+angle-arrowangle);
 		line3 = makeline(line1.outx,line1.outy,20,180+angle+arrowangle);
 	}
+	drawRoundedRectangle = function(mousepos,ocolor){
+		context.beginPath();
+		margin =20;
+		angle = getDegree(startX,startY,mousepos.x,mousepos.y);
+		console.log('angle',angle);		
+		if (angle>0 && angle <=90){
+			//horizontal away from pointer
+			context.moveTo(startX,startY+margin);
+			context.lineTo(startX,mousepos.y-margin);
+			context.stroke();
+			makeroundedcorner(startX,startY+margin,startX+margin,startY,ocolor);
+			makeroundedcorner(startX,mousepos.y-margin,startX+margin,mousepos.y,ocolor);
+			makeroundedcorner(mousepos.x,startY+margin,mousepos.x-margin,startY,ocolor);
+			//right bottom corner
+			makeroundedcorner(mousepos.x,mousepos.y-margin,mousepos.x-margin,mousepos.y,ocolor);
+			
+			//vertical away from pointer
+			context.moveTo(startX+margin,startY);
+			context.lineTo(mousepos.x-margin,startY);
+			context.stroke();
+
+			//horizontal near pointer
+			context.moveTo(startX+margin,mousepos.y);
+			context.lineTo(mousepos.x-margin,mousepos.y);
+			context.stroke();
+			//vertical near from pointer
+			context.moveTo(mousepos.x,startY+margin);
+			context.lineTo(mousepos.x,mousepos.y-margin);
+			context.stroke();
+		}
+		if (angle<0 && angle >-90){
+			makeroundedcorner(startX,startY-margin,startX+margin,startY,ocolor);
+			makeroundedcorner(startX,mousepos.y+margin,startX+margin,mousepos.y,ocolor);
+			makeroundedcorner(mousepos.x,startY-margin,mousepos.x-margin,startY,ocolor);
+			makeroundedcorner(mousepos.x,mousepos.y+margin,mousepos.x-margin,mousepos.y,ocolor);
+			context.moveTo(startX,startY-margin);
+			context.lineTo(startX,mousepos.y+margin);
+			context.stroke();
+			context.moveTo(startX+margin,startY);
+			context.lineTo(mousepos.x-margin,startY);
+			context.stroke();
+			context.moveTo(startX+margin,mousepos.y);
+			context.lineTo(mousepos.x-margin,mousepos.y);
+			context.stroke();
+			context.moveTo(mousepos.x,startY-margin);
+			context.lineTo(mousepos.x,mousepos.y+margin);
+			context.stroke();
+		}
+		if (angle>-180 && angle <-90){
+			makeroundedcorner(startX+margin,startY-margin,startX,startY,ocolor);
+			makeroundedcorner(startX+margin,mousepos.y+margin,startX,mousepos.y,ocolor);//ok
+			makeroundedcorner(mousepos.x,startY-margin,mousepos.x+margin,startY,ocolor);//ok
+			makeroundedcorner(mousepos.x,mousepos.y+margin,mousepos.x+margin,mousepos.y,ocolor);//ok
+			context.moveTo(startX+margin,startY-margin);
+			context.lineTo(startX+margin,mousepos.y+margin);
+			context.stroke();
+			context.moveTo(startX,startY);
+			context.lineTo(mousepos.x+margin,startY);
+			context.stroke();
+			context.moveTo(startX,mousepos.y);
+			context.lineTo(mousepos.x+margin,mousepos.y);
+			context.stroke();
+			context.moveTo(mousepos.x,startY-margin);
+			context.lineTo(mousepos.x,mousepos.y+margin);
+			context.stroke();
+		}
+		if (angle>90 && angle <180){
+			makeroundedcorner(startX,startY+margin,startX-margin,startY,ocolor);
+			makeroundedcorner(startX,mousepos.y-margin,startX-margin,mousepos.y,ocolor);
+			makeroundedcorner(mousepos.x,startY+margin,mousepos.x+margin,startY,ocolor);
+			makeroundedcorner(mousepos.x,mousepos.y-margin,mousepos.x+margin,mousepos.y,ocolor);
+			context.moveTo(startX,startY+margin);
+			context.lineTo(startX,mousepos.y-margin);
+			context.stroke();
+			context.moveTo(startX-margin,startY);
+			context.lineTo(mousepos.x+margin,startY);
+			context.stroke();
+			context.moveTo(startX-margin,mousepos.y);
+			context.lineTo(mousepos.x+margin,mousepos.y);
+			context.stroke();
+			context.moveTo(mousepos.x,startY+margin);
+			context.lineTo(mousepos.x,mousepos.y-margin);
+			context.stroke();
+		}
+	}
 	makepath = function(startX,startY,mousepos,ocolor){
 		context.beginPath();
 		context.moveTo(startX,startY);
@@ -187,6 +283,9 @@
 			case "circle":
 				context.moveTo(mousepos.x,mousepos.y);
 			break;
+			case "roundedrectangle":
+				context.moveTo(mousepos.x,mousepos.y);
+			break;
 			case "rectangle":
 				context.moveTo(mousepos.x,mousepos.y);
 			break;
@@ -225,6 +324,9 @@
 				break;
 				case "rectangle":
 					drawRectangle(mousepos,'grey');
+				break;
+				case "roundedrectangle":
+					drawRoundedRectangle(mousepos,'grey');
 				break;
 				case 'freedrag':
 					drawFreeLine(mousepos,'grey');
@@ -274,6 +376,9 @@
 				break;
 			case "rectangle":
 				drawRectangle(mousepos,ocolor);
+				break;
+			case "roundedrectangle":
+				drawRoundedRectangle(mousepos,ocolor);
 				break;
 			case "arrow":
 				drawArrow(startX,startY,mousepos.x,mousepos.y,20,ocolor);
@@ -330,6 +435,9 @@
 	});
 	$("#btnRectangle").click(function(){
 		mycursor = "rectangle";
+	});
+	$("#btnRoundedRectangle").click(function(){
+		mycursor = "roundedrectangle";
 	});
 	$("#btnFreeDrag").click(function(){
 		mycursor = "freedrag";
