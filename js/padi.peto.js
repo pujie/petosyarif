@@ -18,6 +18,17 @@
 			outx:x2,outy:y2
 		}
 	}
+	makecurve = function(startX,startY,mousepos,ocolor){
+		context.beginPath();
+		var width = mousepos.x - startX, height = mousepos.y - startY;
+		context.moveTo(startX,startY);
+		context.quadraticCurveTo(startX,startY+height,startX+width,startY+height);
+		context.strokeStyle = ocolor;
+		context.stroke();
+		return {
+			outx:mousepos.x,outy:mousepos.y
+		}
+	}
 	makelinewitharrow = function(x1,y1,radius,angle,arrowangle){
 		line1 = makeline(x1,y1,radius,angle);
 		line2 = makeline(line1.outx,line1.outy,20,180+angle-arrowangle);
@@ -36,13 +47,22 @@
 	}
 	drawCircle = function(mousepos,ocolor){
 		context.beginPath();
-		xx = Math.pow((mousepos.x - curPosX),2);
-		yy = Math.pow((mousepos.y - curPosY),2);
+		xx = Math.pow((mousepos.x - startX),2);
+		yy = Math.pow((mousepos.y - startY),2);
 		radius = Math.sqrt(xx+yy);
-		context.arc(curPosX, curPosY, radius,0,2*Math.PI,false);
+		context.arc(startX, startY, radius,0,2*Math.PI,false);
 		context.lineWidth=4;
 		context.strokeStyle = ocolor;
 		context.stroke();				
+	}
+	drawLine = function(startX,startY,mousepos,ocolor,linewidth){
+		context.setLineDash([]);
+		context.beginPath();
+		context.moveTo(startX,startY);
+		context.lineTo(mousepos.x,mousepos.y);
+		context.strokeStyle=ocolor;
+		context.lineWidth = linewidth;
+		context.stroke();		
 	}
 	drawFreeLine = function(mousepos,ocolor){
 		context.lineTo(mousepos.x,mousepos.y);
@@ -78,10 +98,48 @@
 		context.strokeStyle = ocolor;
 		context.drawImage(img,startX,startY,600,340);
 	}
-	/*download = function(link,canvas,filename){
-		link.href = canvas.toDataURL();
-		link.download = filename;
-	}*/
+	drawText = function(startX,startY,mousepos,ocolor){
+		//clearRect();
+		context.putImageData(imageData, 0, 0);
+		context.save();
+		th = mousepos.x - startX;
+		tv = mousepos.y - startY;
+		radian = Math.atan2(tv , th);
+		context.translate(startX,startY);
+		context.rotate(radian);
+		context.font = "16px serif";
+		context.fillStyle = ocolor;
+		context.textAlign = "left";
+		context.fillText($("#textToWrite").val(),0,0);
+		context.restore();		
+	}
+	getRadius = function(startX,startY,endX,endY){
+		th = endX - startX;
+		tv = endY - startY;
+		out = Math.sqrt(Math.pow(th,2)+Math.pow(tv,2));
+		return out;
+	}
+	getDegree = function(startX,startY,endX,endY){
+		radian = Math.atan2(endY-startY,endX-startX);
+		out = radian * (180 / Math.PI);
+		return out;
+	}
+	drawArrow = function(startx,starty,endx,endy,arrowangle,ocolor){
+		context.strokeStyle=ocolor;
+		angle = getDegree(startx,starty,endx,endy);
+		radius = getRadius(startx,starty,endx,endy);
+		line1 = makeline(startx,starty,radius,angle);
+		line2 = makeline(line1.outx,line1.outy,20,180+angle-arrowangle);
+		line3 = makeline(line1.outx,line1.outy,20,180+angle+arrowangle);
+	}
+	makepath = function(startX,startY,mousepos,ocolor){
+		context.beginPath();
+		context.moveTo(startX,startY);
+		context.lineTo(mousepos.x,mousepos.y);
+		context.strokeStyle=ocolor;
+		context.setLineDash([5,15]);
+		context.stroke();		
+	}
 	download = function(link,canvas,filename){
 		link.href = canvas.toDataURL();
 		link.download = filename;
@@ -107,32 +165,29 @@
 		var mousepos = getMousePos(canvas,evt),ocolor = '#'+$('.color').val();
 		buttonPushed = true;
 		imageData = context.getImageData(0, 0, context.canvas.width, context.canvas.height);
+		context.beginPath();
+		startX = mousepos.x;
+		startY = mousepos.y;
 		switch(mycursor){
 			case "line":
-				context.beginPath();
-				startX = mousepos.x;
-				startY = mousepos.y;
+				context.moveTo(mousepos.x,mousepos.y);
+			break;
+			case "curve":
+				context.moveTo(mousepos.x,mousepos.y);
+			break;
+			case "arrow":
 				context.moveTo(mousepos.x,mousepos.y);
 			break;
 			case "text":
-				context.beginPath();
-				startX = mousepos.x;
-				startY = mousepos.y;
 				context.moveTo(mousepos.x,mousepos.y);
 			break;
 			case "freedrag":
-				context.beginPath();
 				context.moveTo(mousepos.x,mousepos.y);
 			break;
 			case "circle":
-				context.beginPath();
-				curPosX = mousepos.x;
-				curPosY = mousepos.y;
+				context.moveTo(mousepos.x,mousepos.y);
 			break;
 			case "rectangle":
-				context.beginPath();
-				startX = mousepos.x;
-				startY = mousepos.y;
 				context.moveTo(mousepos.x,mousepos.y);
 			break;
 			case "tower1":
@@ -163,31 +218,26 @@
 				case "circle":
 					context.setLineDash([]);
 					context.lineWidth = 4;
-					drawCircle(mousepos,'brown');
+					drawCircle(mousepos,'grey');
+				break;
+				case "curve":
+					makecurve(startX,startY,mousepos);
 				break;
 				case "rectangle":
-					drawRectangle(mousepos,'black');
+					drawRectangle(mousepos,'grey');
 				break;
 				case 'freedrag':
-					drawFreeLine(mousepos,'brown');
+					drawFreeLine(mousepos,'grey');
 				break;
 				case 'line':
-					context.setLineDash([]);
-					context.beginPath();
-					context.moveTo(startX,startY);
-					context.lineTo(mousepos.x,mousepos.y);
-					context.strokeStyle='#'+$(".color").val();
-					context.lineWidth = 4;
-					context.stroke();
+					drawLine(startX,startY,mousepos,'grey',4);
+				break;
+				case 'arrow':
+					context.setLineDash([5,15]);
+					drawLine(startX,startY,mousepos,'grey',4);
 				break;
 				case 'text':
-					context.beginPath();
-					context.moveTo(startX,startY);
-					context.lineTo(mousepos.x,mousepos.y);
-					context.strokeStyle='#'+$(".color").val();
-					context.lineWidth = 4;
-					context.setLineDash([5,15]);
-					context.stroke();
+					makepath(startX,startY,mousepos,'grey');
 				break;
 				case 'tower1':
 					drawObject(mousepos,ocolor,'img/stamps/RadioTower.png');
@@ -209,39 +259,30 @@
 	});
 	canvas.addEventListener('mouseup',function(evt){
 		var mousepos = getMousePos(canvas,evt),ocolor = '#'+$(".color").val();
+		context.lineWidth = 4;
 		buttonPushed = false;
+		context.setLineDash([]);
 		switch(mycursor){
 			case "freedrag":
-				drawFreeLine(mousepos,'#'+$(".color").val());
+				drawFreeLine(mousepos,ocolor);
 				break;
 			case "circle":
 				drawCircle(mousepos,ocolor);
 				break;
+			case "curve":
+				c = makecurve(startX,startY,mousepos,ocolor);
+				break;
 			case "rectangle":
 				drawRectangle(mousepos,ocolor);
 				break;
+			case "arrow":
+				drawArrow(startX,startY,mousepos.x,mousepos.y,20,ocolor);
+				break;
 			case "line":
-				radius = Math.sqrt(Math.pow(mousepos.x-startX,2)+Math.pow(mousepos.y-startY,2));
-				th = mousepos.x - startX;
-				tv = mousepos.y - startY;
-				radian = Math.atan2(tv , th);
-				degree = radian * (180 / Math.PI);
-				makelinewitharrow(startX,startY,radius,degree,20);
+				drawLine(startX,startY,mousepos,ocolor,4);
 				break;
 			case "text":
-				clearRect();
-				context.putImageData(imageData, 0, 0);
-				context.save();
-				th = mousepos.x - startX;
-				tv = mousepos.y - startY;
-				radian = Math.atan2(tv , th);
-				context.translate(startX,startY);
-				context.rotate(radian);
-				context.font = "16px serif";
-				context.fillStyle = "red";
-				context.textAlign = "left";
-				context.fillText($("#textToWrite").val(),0,0);
-				context.restore();
+				drawText(startX,startY,mousepos,ocolor);
 				break;
 			case "tower1":
 				drawObject(mousepos,ocolor,'img/stamps/RadioTower.png');
@@ -273,14 +314,16 @@
 		$(this).attr('disabled',true)
 	});
 	$("#btnSave").click(function(){
-		//download(this,canvas,'test.png');
-		$('#dSave').modal();
+		download(this,canvas,'petosyarif.png');
 	});
 	$("#btnArrow").click(function(){
 		mycursor = "arrow";
 	});
 	$("#btnLine").click(function(){
 		mycursor = "line";
+	});
+	$("#btnCurve").click(function(){
+		mycursor = "curve";
 	});
 	$("#btnCircle").click(function(){
 		mycursor = "circle";
@@ -317,9 +360,10 @@
 		$('#dText').modal('hide');
 	});
 	$("#btnDownload").click(function(){
-		var dataUrl = canvas.toDataURL();
+		download(this,canvas,$('#picName').val());
+/*		var dataUrl = canvas.toDataURL();
 		var image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
-		window.location.href=image;
+		window.location.href=image;*/
 	});
 	$("#btnLoadImage").click(function(){
 		var imageObj = new Image();
