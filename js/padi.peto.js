@@ -29,6 +29,43 @@
 			outx:mousepos.x,outy:mousepos.y
 		}
 	}
+	makecountercurve = function(startX,startY,mousepos,ocolor){
+		context.beginPath();
+		var width = mousepos.x - startX, height = mousepos.y - startY;
+		context.moveTo(startX,startY);
+		context.quadraticCurveTo(startX+width,startY,startX+width,startY+height);
+		context.strokeStyle = ocolor;
+		context.stroke();
+		return {
+			outx:mousepos.x,outy:mousepos.y
+		}
+	}
+	makecurvewitharrow = function(startX,startY,mousepos,ocolor){
+		endpoint = makecurve(startX,startY,mousepos,ocolor);
+		radius = getRadius(startX,startY,endpoint.outx,endpoint.outy);
+		angle = getDegree(startX,startY,endpoint.outx,endpoint.outy);
+		if(endpoint.outx-40>startX){
+			line2 = makeline(endpoint.outx,endpoint.outy,20,180+20);
+			line2 = makeline(endpoint.outx,endpoint.outy,20,180-20);
+		}
+		if(endpoint.outx+40<startX){
+			line2 = makeline(endpoint.outx,endpoint.outy,20,-20);
+			line2 = makeline(endpoint.outx,endpoint.outy,20,+20);
+		}
+	}
+	makecountercurvewitharrow = function(startX,startY,mousepos,ocolor){
+		endpoint = makecountercurve(startX,startY,mousepos,ocolor);
+		radius = getRadius(startX,startY,endpoint.outx,endpoint.outy);
+		angle = getDegree(startX,startY,endpoint.outx,endpoint.outy);
+		if(endpoint.outy-40>startY){
+			line = makeline(endpoint.outx,endpoint.outy,20,250);
+			line2 = makeline(endpoint.outx,endpoint.outy,20,290);
+		}
+		if(endpoint.outy+40<startY){
+			line2 = makeline(endpoint.outx,endpoint.outy,20,+70);
+			line2 = makeline(endpoint.outx,endpoint.outy,20,+110);
+		}
+	}
 	makeroundedcorner = function(startX,startY,endX,endY,ocolor){
 		context.beginPath();
 		var width = endX - startX, height = endY - startY;
@@ -54,7 +91,7 @@
 	};
 	clearRect = function(){
 		context.clearRect(0,0,canvas.width,canvas.height);
-		loadImage();				
+		loadImage();
 	}
 	drawCircle = function(mousepos,ocolor){
 		context.beginPath();
@@ -64,7 +101,7 @@
 		context.arc(startX, startY, radius,0,2*Math.PI,false);
 		context.lineWidth=4;
 		context.strokeStyle = ocolor;
-		context.stroke();				
+		context.stroke();
 	}
 	drawLine = function(startX,startY,mousepos,ocolor,linewidth){
 		context.setLineDash([]);
@@ -73,22 +110,22 @@
 		context.lineTo(mousepos.x,mousepos.y);
 		context.strokeStyle=ocolor;
 		context.lineWidth = linewidth;
-		context.stroke();		
+		context.stroke();
 	}
 	drawFreeLine = function(mousepos,ocolor){
 		context.lineTo(mousepos.x,mousepos.y);
 		context.strokeStyle=ocolor;
 		context.lineWidth = 4;
-		context.stroke();				
+		context.stroke();
 	}
 	drawRectangle = function(mousepos,ocolor){
 		context.beginPath();
 		context.rect(startX,startY,mousepos.x - startX,mousepos.y - startY);
 		context.lineWidth = 4;
 		context.strokeStyle = ocolor;
-		context.stroke();				
+		context.stroke();
 	}
-	drawObject = function(mousepos,ocolor,src){
+	drawObject = function(mousepos,ocolor,src,width,height){
 		context.beginPath();
 		startX = mousepos.x;
 		startY = mousepos.y;
@@ -96,8 +133,7 @@
 		var stamp = new Image();
 		stamp.src = src;
 		context.strokeStyle = ocolor;
-		//context.drawImage(stamp,startX,startY,40,90);
-		context.drawImage(stamp,startX,startY,40,70);
+		context.drawImage(stamp,startX,startY,width,height);
 	}
 	drawStamp = function(mousepos,ocolor,stamp){
 		context.beginPath();
@@ -122,7 +158,7 @@
 		context.fillStyle = ocolor;
 		context.textAlign = "left";
 		context.fillText($("#textToWrite").val(),0,0);
-		context.restore();		
+		context.restore();
 	}
 	getRadius = function(startX,startY,endX,endY){
 		th = endX - startX;
@@ -147,31 +183,26 @@
 		context.beginPath();
 		margin =20;
 		angle = getDegree(startX,startY,mousepos.x,mousepos.y);
-		console.log('angle',angle);		
+		console.log('main color',ocolor);
+		context.fillStyle = ocolor;
 		if (angle>0 && angle <=90){
-			//horizontal away from pointer
-			context.moveTo(startX,startY+margin);
-			context.lineTo(startX,mousepos.y-margin);
-			context.stroke();
+			makeroundedcorner(mousepos.x,mousepos.y-margin,mousepos.x-margin,mousepos.y,ocolor);
 			makeroundedcorner(startX,startY+margin,startX+margin,startY,ocolor);
 			makeroundedcorner(startX,mousepos.y-margin,startX+margin,mousepos.y,ocolor);
 			makeroundedcorner(mousepos.x,startY+margin,mousepos.x-margin,startY,ocolor);
-			//right bottom corner
-			makeroundedcorner(mousepos.x,mousepos.y-margin,mousepos.x-margin,mousepos.y,ocolor);
-			
-			//vertical away from pointer
+			context.moveTo(startX,startY+margin);
+			context.lineTo(startX,mousepos.y-margin);
+			context.stroke();
 			context.moveTo(startX+margin,startY);
 			context.lineTo(mousepos.x-margin,startY);
 			context.stroke();
-
-			//horizontal near pointer
 			context.moveTo(startX+margin,mousepos.y);
 			context.lineTo(mousepos.x-margin,mousepos.y);
 			context.stroke();
-			//vertical near from pointer
 			context.moveTo(mousepos.x,startY+margin);
 			context.lineTo(mousepos.x,mousepos.y-margin);
 			context.stroke();
+			console.log('1st color',ocolor);
 		}
 		if (angle<0 && angle >-90){
 			makeroundedcorner(startX,startY-margin,startX+margin,startY,ocolor);
@@ -190,6 +221,7 @@
 			context.moveTo(mousepos.x,startY-margin);
 			context.lineTo(mousepos.x,mousepos.y+margin);
 			context.stroke();
+			console.log('2nd color',ocolor);
 		}
 		if (angle>-180 && angle <-90){
 			makeroundedcorner(startX+margin,startY-margin,startX,startY,ocolor);
@@ -208,6 +240,7 @@
 			context.moveTo(mousepos.x,startY-margin);
 			context.lineTo(mousepos.x,mousepos.y+margin);
 			context.stroke();
+			console.log('3rd color',ocolor);
 		}
 		if (angle>90 && angle <180){
 			makeroundedcorner(startX,startY+margin,startX-margin,startY,ocolor);
@@ -226,6 +259,7 @@
 			context.moveTo(mousepos.x,startY+margin);
 			context.lineTo(mousepos.x,mousepos.y-margin);
 			context.stroke();
+			console.log('4th color',ocolor);
 		}
 	}
 	makepath = function(startX,startY,mousepos,ocolor){
@@ -234,7 +268,7 @@
 		context.lineTo(mousepos.x,mousepos.y);
 		context.strokeStyle=ocolor;
 		context.setLineDash([5,15]);
-		context.stroke();		
+		context.stroke();
 	}
 	download = function(link,canvas,filename){
 		link.href = canvas.toDataURL();
@@ -252,10 +286,13 @@
 		mycursor="arrow",
 		mycolor="#000000",
 		buttonPushed = false,
-		curPosX=0,
-		curPosY=0,
+		curPosX= 0,
+		curPosY= 0,
 		startX = 0,
 		startY = 0,
+		size = 'small',
+		scale = 1,
+		width = 40, height = 70,
 		imageData = context.getImageData(0, 0, context.canvas.width, context.canvas.height);
 	canvas.addEventListener('mousedown',function(evt){
 		var mousepos = getMousePos(canvas,evt),ocolor = '#'+$('.color').val();
@@ -269,6 +306,15 @@
 				context.moveTo(mousepos.x,mousepos.y);
 			break;
 			case "curve":
+				context.moveTo(mousepos.x,mousepos.y);
+			break;
+			case "countercurve":
+				context.moveTo(mousepos.x,mousepos.y);
+			break;
+			case "curveWithArrow":
+				context.moveTo(mousepos.x,mousepos.y);
+			break;
+			case "counterCurveWithArrow":
 				context.moveTo(mousepos.x,mousepos.y);
 			break;
 			case "arrow":
@@ -290,19 +336,25 @@
 				context.moveTo(mousepos.x,mousepos.y);
 			break;
 			case "tower1":
-				drawObject(mousepos,ocolor,'img/stamps/RadioTower.png');
+				drawObject(mousepos,ocolor,'img/stamps/RadioTower.png',40*scale,70*scale);
 			break;
 			case "tower2":
-				drawObject(mousepos,'img/stamps/antenna.png');
+				drawObject(mousepos,'img/stamps/antenna.png',40*scale,70*scale);
 			break;
 			case "palm1":
-				drawObject(mousepos,ocolor,'img/stamps/palm1.png');
+				drawObject(mousepos,ocolor,'img/stamps/palm1.png',40*scale,70*scale);
 				break;
 			case "palm2":
-				drawObject(mousepos,ocolor,'img/stamps/palm.png');
+				drawObject(mousepos,ocolor,'img/stamps/palm.png',40*scale,70*scale);
 				break;
 			case "forest":
-				drawObject(mousepos,ocolor,'img/stamps/forest.png');
+				drawObject(mousepos,ocolor,'img/stamps/forest.png',40*scale,70*scale);
+				break;
+			case "sharkright":
+				drawObject(mousepos,ocolor,'img/stamps/whitehiungakakright.png',80*scale,110*scale);
+				break;
+			case "sharkleft":
+				drawObject(mousepos,ocolor,'img/stamps/whitehiungakak.png',80*scale,110*scale);
 				break;
 			case "stampApproved":
 				drawStamp(mousepos,ocolor,completed);
@@ -321,6 +373,15 @@
 				break;
 				case "curve":
 					makecurve(startX,startY,mousepos);
+				break;
+				case "countercurve":
+					makecountercurve(startX,startY,mousepos);
+				break;
+				case "curveWithArrow":
+					makecurvewitharrow(startX,startY,mousepos);
+				break;
+				case "counterCurveWithArrow":
+					makecountercurvewitharrow(startX,startY,mousepos);
 				break;
 				case "rectangle":
 					drawRectangle(mousepos,'grey');
@@ -342,19 +403,25 @@
 					makepath(startX,startY,mousepos,'grey');
 				break;
 				case 'tower1':
-					drawObject(mousepos,ocolor,'img/stamps/RadioTower.png');
+					drawObject(mousepos,ocolor,'img/stamps/RadioTower.png',40*scale,70*scale);
 				break;
 				case 'tower2':
-					drawObject(mousepos,ocolor,'img/stamps/antenna.png');
+					drawObject(mousepos,ocolor,'img/stamps/antenna.png',40*scale,70*scale);
 				break;
+				case "sharkright":
+					drawObject(mousepos,ocolor,'img/stamps/whitehiungakakright.png',80*scale,110*scale);
+					break;
+				case "sharkleft":
+					drawObject(mousepos,ocolor,'img/stamps/whitehiungakak.png',80*scale,110*scale);
+					break;
 				case "palm1":
-					drawObject(mousepos,ocolor,'img/stamps/palm1.png');
+					drawObject(mousepos,ocolor,'img/stamps/palm1.png',40*scale,70*scale);
 					break;
 				case "palm2":
-					drawObject(mousepos,ocolor,'img/stamps/palm.png');
+					drawObject(mousepos,ocolor,'img/stamps/palm.png',40*scale,70*scale);
 					break;
 				case "forest":
-					drawObject(mousepos,ocolor,'img/stamps/forest.png');
+					drawObject(mousepos,ocolor,'img/stamps/forest.png',40*scale,70*scale);
 					break;
 			}
 		}
@@ -374,6 +441,15 @@
 			case "curve":
 				c = makecurve(startX,startY,mousepos,ocolor);
 				break;
+			case "countercurve":
+				c = makecountercurve(startX,startY,mousepos,ocolor);
+				break;
+			case "curveWithArrow":
+				c = makecurvewitharrow(startX,startY,mousepos,ocolor);
+				break;
+			case "counterCurveWithArrow":
+				c = makecountercurvewitharrow(startX,startY,mousepos,ocolor);
+				break;
 			case "rectangle":
 				drawRectangle(mousepos,ocolor);
 				break;
@@ -390,22 +466,29 @@
 				drawText(startX,startY,mousepos,ocolor);
 				break;
 			case "tower1":
-				drawObject(mousepos,ocolor,'img/stamps/RadioTower.png');
+			console.log('scale',scale);
+				drawObject(mousepos,ocolor,'img/stamps/RadioTower.png',40*scale,70*scale);
 				break;
 			case "tower2":
-				drawObject(mousepos,ocolor,'img/stamps/antenna.png');
+				drawObject(mousepos,ocolor,'img/stamps/antenna.png',40*scale,70*scale);
 				break;
 			case "palm1":
-				drawObject(mousepos,ocolor,'img/stamps/palm1.png');
+				drawObject(mousepos,ocolor,'img/stamps/palm1.png',40*scale,70*scale);
 				break;
 			case "palm2":
-				drawObject(mousepos,ocolor,'img/stamps/palm.png');
+				drawObject(mousepos,ocolor,'img/stamps/palm.png',40*scale,70*scale);
 				break;
 			case "forest":
-				drawObject(mousepos,ocolor,'img/stamps/forest.png');
+				drawObject(mousepos,ocolor,'img/stamps/forest.png',40*scale,70*scale);
 				break;
 			case "stampApproved":
 				drawStamp(mousepos,ocolor,completed);
+				break;
+			case "sharkright":
+				drawObject(mousepos,ocolor,'img/stamps/whitehiungakakright.png',80*scale,110*scale);
+				break;
+			case "sharkleft":
+				drawObject(mousepos,ocolor,'img/stamps/whitehiungakak.png',80*scale,110*scale);
 				break;
 		}
 	});
@@ -429,6 +512,15 @@
 	});
 	$("#btnCurve").click(function(){
 		mycursor = "curve";
+	});
+	$("#btnCounterCurve").click(function(){
+		mycursor = "countercurve";
+	});
+	$("#btnCurveWithArrow").click(function(){
+		mycursor = "curveWithArrow";
+	});
+	$("#btnCounterCurveWithArrow").click(function(){
+		mycursor = "counterCurveWithArrow";
 	});
 	$("#btnCircle").click(function(){
 		mycursor = "circle";
@@ -457,6 +549,12 @@
 	$("#btnForest").click(function(){
 		mycursor = "forest";
 	});
+	$("#btnSharkRight").click(function(){
+		mycursor = "sharkright";
+	});
+	$("#btnSharkLeft").click(function(){
+		mycursor = "sharkleft";
+	});
 	$("#btnStampApproved").click(function(){
 		mycursor = "stampApproved";
 	});
@@ -479,5 +577,19 @@
 			context.drawImage(imageObj,0,0);
 		}
 		imageObj.src = "";
+	});
+	$('.stampsize').click(function(){
+		console.log('stampsize',$(this).attr('value'));
+		switch($(this).attr('value')){
+			case 'small':
+				scale = 1;
+				break;
+			case 'medium':
+				scale = 2;
+				break;
+			case 'big':
+				scale = 3;
+				break;
+		}
 	});
 }(jQuery));
