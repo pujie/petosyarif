@@ -129,7 +129,7 @@
 		context.beginPath();
 		startX = mousepos.x;
 		startY = mousepos.y;
-		context.moveTo(mousepos.x,mousepos.y);
+		context.moveTo(mousepos.x+width,mousepos.y+height);
 		var stamp = new Image();
 		stamp.src = src;
 		context.strokeStyle = ocolor;
@@ -356,9 +356,19 @@
 			case "sharkleft":
 				drawObject(mousepos,ocolor,'img/stamps/whitehiungakak.png',80*scale,110*scale);
 				break;
+			case "smilingLaptop":
+				drawObject(mousepos,ocolor,'img/stamps/smilingLaptop.png',100*scale,100*scale);
+				break;
 			case "stampApproved":
 				drawStamp(mousepos,ocolor,completed);
-				break;		}
+				break;		
+			case "whitesedan":
+				drawObject(mousepos,ocolor,'img/stamps/whitesedan.png',100*scale,100*scale);
+				break;
+			case "whitesedanr":
+				drawObject(mousepos,ocolor,'img/stamps/whitesedanr.png',100*scale,100*scale);
+				break;
+		}
 	});
 	canvas.addEventListener('mousemove',function(evt){
 		var mousepos = getMousePos(canvas,evt),ocolor = '#'+$(".color").val();
@@ -422,6 +432,15 @@
 					break;
 				case "forest":
 					drawObject(mousepos,ocolor,'img/stamps/forest.png',40*scale,70*scale);
+					break;
+				case "smilingLaptop":
+					drawObject(mousepos,ocolor,'img/stamps/smilingLaptop.png',100*scale,100*scale);
+					break;
+				case "whitesedan":
+					drawObject(mousepos,ocolor,'img/stamps/whitesedan.png',100*scale,100*scale);
+					break;
+				case "whitesedanr":
+					drawObject(mousepos,ocolor,'img/stamps/whitesedanr.png',100*scale,100*scale);
 					break;
 			}
 		}
@@ -490,6 +509,15 @@
 			case "sharkleft":
 				drawObject(mousepos,ocolor,'img/stamps/whitehiungakak.png',80*scale,110*scale);
 				break;
+			case "smilingLaptop":
+				drawObject(mousepos,ocolor,'img/stamps/smilingLaptop.png',100*scale,100*scale);
+				break;
+			case "whitesedan":
+				drawObject(mousepos,ocolor,'img/stamps/whitesedan.png',100*scale,100*scale);
+				break;
+			case "whitesedanr":
+				drawObject(mousepos,ocolor,'img/stamps/whitesedanr.png',100*scale,100*scale);
+				break;
 		}
 	});
 	$("#btnClear").click(function(){
@@ -554,6 +582,15 @@
 	});
 	$("#btnSharkLeft").click(function(){
 		mycursor = "sharkleft";
+	});
+	$("#btnSmilingLaptop").click(function(){
+		mycursor = "smilingLaptop";
+	});
+	$("#whitesedan").click(function(){
+		mycursor = "whitesedan";
+	});
+	$("#whitesedanr").click(function(){
+		mycursor = "whitesedanr";
 	});
 	$("#btnStampApproved").click(function(){
 		mycursor = "stampApproved";
