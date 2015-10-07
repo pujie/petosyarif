@@ -146,6 +146,16 @@
 		context.strokeStyle = ocolor;
 		context.drawImage(img,startX,startY,600,340);
 	}
+	drawUploaded = function(mousepos,ocolor,stamp){
+		context.beginPath();
+		startX = mousepos.x-200;
+		startY = mousepos.y-200;
+		context.moveTo(startX,startY);
+		img = new Image();
+		img.src = stamp;
+		context.strokeStyle = ocolor;
+		context.drawImage(img,startX,startY);
+	}
 	drawText = function(startX,startY,mousepos,ocolor){
 		//clearRect();
 		context.putImageData(imageData, 0, 0);
@@ -337,8 +347,7 @@
 				context.moveTo(mousepos.x,mousepos.y);
 			break;
 			case "uploadimage":
-				drawStamp(mousepos,ocolor,imgsrc);
-				//drawObject(mousepos,ocolor,'img/stamps/RadioTower.png',40*scale,70*scale);
+				drawUploaded(mousepos,ocolor,imgsrc);
 			break;
 			case "tower1":
 				drawObject(mousepos,ocolor,'img/stamps/RadioTower.png',40*scale,70*scale);
@@ -382,8 +391,7 @@
 			context.putImageData(imageData, 0, 0);
 			switch(mycursor){
 				case "uploadimage":
-					drawStamp(mousepos,ocolor,imgsrc);
-					//drawObject(mousepos,ocolor,'img/stamps/RadioTower.png',40*scale,70*scale);
+					drawUploaded(mousepos,ocolor,imgsrc);
 				break;
 				case "circle":
 					context.setLineDash([]);
@@ -462,8 +470,7 @@
 		console.log('Mycursor',mycursor);
 		switch(mycursor){
 			case "uploadimage":
-				drawStamp(mousepos,ocolor,imgsrc);
-				//drawObject(mousepos,ocolor,'img/stamps/RadioTower.png',40*scale,70*scale);
+				drawUploaded(mousepos,ocolor,imgsrc);
 			break;
 			case "freedrag":
 				drawFreeLine(mousepos,ocolor);
