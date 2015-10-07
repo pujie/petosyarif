@@ -1,4 +1,5 @@
 (function($){
+	//var imgsrc;
 	toRad = function(degree){
 		return degree * Math.PI / 180;
 	}
@@ -335,6 +336,10 @@
 			case "rectangle":
 				context.moveTo(mousepos.x,mousepos.y);
 			break;
+			case "uploadimage":
+				drawStamp(mousepos,ocolor,imgsrc);
+				//drawObject(mousepos,ocolor,'img/stamps/RadioTower.png',40*scale,70*scale);
+			break;
 			case "tower1":
 				drawObject(mousepos,ocolor,'img/stamps/RadioTower.png',40*scale,70*scale);
 			break;
@@ -376,6 +381,10 @@
 			clearRect();
 			context.putImageData(imageData, 0, 0);
 			switch(mycursor){
+				case "uploadimage":
+					drawStamp(mousepos,ocolor,imgsrc);
+					//drawObject(mousepos,ocolor,'img/stamps/RadioTower.png',40*scale,70*scale);
+				break;
 				case "circle":
 					context.setLineDash([]);
 					context.lineWidth = 4;
@@ -450,7 +459,12 @@
 		context.lineWidth = 4;
 		buttonPushed = false;
 		context.setLineDash([]);
+		console.log('Mycursor',mycursor);
 		switch(mycursor){
+			case "uploadimage":
+				drawStamp(mousepos,ocolor,imgsrc);
+				//drawObject(mousepos,ocolor,'img/stamps/RadioTower.png',40*scale,70*scale);
+			break;
 			case "freedrag":
 				drawFreeLine(mousepos,ocolor);
 				break;
@@ -608,12 +622,18 @@
 		var image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
 		window.location.href=image;*/
 	});
-	$("#btnLoadImage").click(function(){
-		var imageObj = new Image();
-		imageObj.onload = function(){
-			context.drawImage(imageObj,0,0);
+	$("#btnLoadImage").change(function(evt){
+		var input = evt.target,
+			filereader = new FileReader();
+		filereader.onloadend = function(){
+			imgsrc = filereader.result;
 		}
-		imageObj.src = "";
+		filereader.readAsDataURL(input.files[0]);
+	});
+	$("#btnLoadImage").hide();
+	$("#btnuploader").click(function(){
+		mycursor = "uploadimage";
+		$("#btnLoadImage").click();
 	});
 	$('.stampsize').click(function(){
 		console.log('stampsize',$(this).attr('value'));
