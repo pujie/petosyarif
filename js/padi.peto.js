@@ -165,7 +165,18 @@
 		radian = Math.atan2(tv , th);
 		context.translate(startX,startY);
 		context.rotate(radian);
-		context.font = "16px serif";
+		switch(scale){
+			case 1:
+			context.font = "16px serif";
+			break;
+			case 2:
+			context.font = "32px serif";
+			break;
+			case 3:
+			context.font = "72px serif";
+			break;
+		}
+		
 		context.fillStyle = ocolor;
 		context.textAlign = "left";
 		context.fillText($("#textToWrite").val(),0,0);
