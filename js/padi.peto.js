@@ -138,13 +138,25 @@
 	}
 	drawStamp = function(mousepos,ocolor,stamp){
 		context.beginPath();
-		startX = mousepos.x-200;
-		startY = mousepos.y-200;
 		context.moveTo(startX,startY);
 		img = new Image();
 		img.src = stamp;
 		context.strokeStyle = ocolor;
-		context.drawImage(img,startX,startY,600,340);
+		var stampwidth = 90,stampheight=102;
+		switch (scale){
+			case 1:
+			stampwidth = 180;stampheight = 102;
+			break;
+			case 2:
+			stampwidth = 300;stampheight = 170;
+			break;
+			case 3:
+			stampwidth = 600;stampheight = 340;
+			break;			
+		}
+		startX = mousepos.x-(stampwidth/2);
+		startY = mousepos.y-(stampheight/2);		
+		context.drawImage(img,startX,startY,stampwidth,stampheight);
 	}
 	drawUploaded = function(mousepos,ocolor,stamp){
 		context.beginPath();
@@ -300,7 +312,6 @@
 		imageObj.onload = function(){
 			context.drawImage(imageObj,0,0);
 		}
-	//	imageObj.src = ";
 	}
 	var imageObj = new Image(),
 		canvas = document.getElementById("mycanvas"),
@@ -393,6 +404,15 @@
 			case "whitesedanr":
 				drawObject(mousepos,ocolor,'img/stamps/whitesedanr.png',100*scale,100*scale);
 				break;
+			case "callout1":
+				drawStamp(mousepos,ocolor,callout1);
+				break;
+			case "thinking1":
+				drawStamp(mousepos,ocolor,thinking1);
+				break;
+			case "shout1":
+				drawStamp(mousepos,ocolor,shout1);
+				break;
 		}
 	});
 	canvas.addEventListener('mousemove',function(evt){
@@ -469,6 +489,15 @@
 					break;
 				case "whitesedanr":
 					drawObject(mousepos,ocolor,'img/stamps/whitesedanr.png',100*scale,100*scale);
+					break;
+				case "callout1":
+					drawStamp(mousepos,ocolor,callout1);
+					break;
+				case "thinking1":
+					drawStamp(mousepos,ocolor,thinking1);
+					break;
+				case "shout1":
+					drawStamp(mousepos,ocolor,shout1);
 					break;
 			}
 		}
@@ -550,6 +579,15 @@
 			case "whitesedanr":
 				drawObject(mousepos,ocolor,'img/stamps/whitesedanr.png',100*scale,100*scale);
 				break;
+			case "callout1":
+				drawStamp(mousepos,ocolor,callout1);
+				break;
+			case "thinking1":
+				drawStamp(mousepos,ocolor,thinking1);
+				break;
+			case "shout1":
+				drawStamp(mousepos,ocolor,shout1);
+				break;
 		}
 	});
 	$("#btnClear").click(function(){
@@ -627,6 +665,15 @@
 	$("#btnStampApproved").click(function(){
 		mycursor = "stampApproved";
 	});
+	$("#btnCallout1").click(function(){
+		mycursor = "callout1";
+	});
+	$("#btnThinking1").click(function(){
+		mycursor = "thinking1";
+	});
+	$("#btnShout1").click(function(){
+		mycursor = "shout1";
+	});
 	$("#btnText").click(function(){
 		$('#dText').modal();
 		mycursor = "text";
@@ -644,6 +691,7 @@
 		var input = evt.target,
 			filereader = new FileReader();
 		filereader.onloadend = function(){
+			console.log('filereaderresult',filereader.result);
 			imgsrc = filereader.result;
 		}
 		filereader.readAsDataURL(input.files[0]);
