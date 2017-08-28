@@ -407,6 +407,9 @@
 			case "callout1":
 				drawStamp(mousepos,ocolor,callout1);
 				break;
+			case "callout2":
+				drawStamp(mousepos,ocolor,callout2);
+				break;
 			case "thinking1":
 				drawStamp(mousepos,ocolor,thinking1);
 				break;
@@ -492,6 +495,9 @@
 					break;
 				case "callout1":
 					drawStamp(mousepos,ocolor,callout1);
+					break;
+				case "callout2":
+					drawStamp(mousepos,ocolor,callout2);
 					break;
 				case "thinking1":
 					drawStamp(mousepos,ocolor,thinking1);
@@ -582,6 +588,9 @@
 			case "callout1":
 				drawStamp(mousepos,ocolor,callout1);
 				break;
+			case "callout2":
+				drawStamp(mousepos,ocolor,callout2);
+				break;
 			case "thinking1":
 				drawStamp(mousepos,ocolor,thinking1);
 				break;
@@ -667,6 +676,9 @@
 	});
 	$("#btnCallout1").click(function(){
 		mycursor = "callout1";
+	});
+	$("#btnCallout2").click(function(){
+		mycursor = "callout2";
 	});
 	$("#btnThinking1").click(function(){
 		mycursor = "thinking1";
